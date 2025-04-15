@@ -28,7 +28,10 @@ export async function signup(req, res) {
         // If user creation remains unsuccessful
         if (!user) return ResponseError(res, 400, 'User creation unsuccessful!');
 
-        return ResponseSuccess(res, 201, user);  // returning created user object
+        // Generating token
+        const token = user.generateAuthToken();
+
+        return ResponseSuccess(res, 201, { token, user });  // returning created user object
     } catch (error) {
         console.log(error.message);
         return ResponseError(res, 500, 'Internal server error');
