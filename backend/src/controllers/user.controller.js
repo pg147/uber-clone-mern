@@ -59,6 +59,18 @@ export async function login(req, res) {
 
     const token = user.generateAuthToken();  // generating auth token
 
+    res.cookie(`user_${user?._id}`, token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        expires: 360000
+    }); // setting cookie
+
     // If every check remains successful then returning user along with auth token
     return ResponseSuccess(res, 200, { token, user });
 }
+
+export async function getUserProfile(req, res) {
+    // Here only Success Response is required, since middleware checks for the possible failure
+    return ResponseSuccess(res, 200, { user: req.user })
+}
+
