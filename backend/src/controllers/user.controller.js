@@ -1,5 +1,6 @@
 import User from "../models/user.model.js";
 import { ResponseError, ResponseSuccess } from "../libs/utils.js";
+import bcrypt from "bcrypt";
 
 export async function signup(req, res) {
     const { firstName, lastName, email, password } = req.body;  // extracting data
@@ -36,4 +37,28 @@ export async function signup(req, res) {
         console.log(error.message);
         return ResponseError(res, 500, 'Internal server error');
     }
+}
+
+export async function login(req, res) {
+    const { email, password } = req.body;  // extracting data
+
+    // If any of the required fields is empty
+    if (!email || !password) return ResponseError(res, 400, "All fields required!");
+
+    // Fetching user with the email from the database
+    const user = await User.findOne({ email: email }).select("+password");
+
+    // If user not found
+    if (!user) return ResponseError(res, 401, `User with ${email} not found!`);
+
+    // Comparing the password with hashed password in the database
+    const checkPassword = await user.comparePassword(password);
+
+    // If password check fails
+    if (!checkPassword) return ResponseError(res, 400, "Incorrect password!");
+
+    const token = user.generateAuthToken();  // generating auth token
+
+    // If every check remains successful then returning user along with auth token
+    return ResponseSuccess(res, 200, { token, user });
 }
