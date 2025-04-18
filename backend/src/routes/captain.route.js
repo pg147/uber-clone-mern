@@ -12,7 +12,7 @@ router.post('/create', validateCaptainDetails, registerCaptain);
 router.post('/login', validateCaptainDetails, loginCaptain);
 
 // Logout Captain
-router.get('/logout', authCaptain, logoutCaptain);
+router.post('/logout', authCaptain, logoutCaptain);
 
 // Fetch Captain Profile
 router.get('/profile', authCaptain, getCaptainProfile);

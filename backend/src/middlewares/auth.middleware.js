@@ -37,7 +37,7 @@ export async function authCaptain(req, res, next) {
     if (!token) return ResponseError(res, 401, 'Unauthorized access!');
 
     // Checking if the captain's token is blacklisted
-    const isBlacklisted = await blacklistTokenModel.findOne(token);
+    const isBlacklisted = await blacklistTokenModel.findOne({ token: token });
 
     // If the token is blacklisted -> send error
     if (isBlacklisted) return ResponseError(res, 400, 'Unauthorized access!');

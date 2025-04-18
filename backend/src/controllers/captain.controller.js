@@ -74,7 +74,7 @@ export async function loginCaptain(req, res) {
     res.cookie('token', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        expires: 86400
+        expires: new Date(Date.now() + 900000)
     });  // setting cookie
 
     // Returning captain along with the token

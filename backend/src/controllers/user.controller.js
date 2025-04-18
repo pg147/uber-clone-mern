@@ -63,7 +63,7 @@ export async function login(req, res) {
     res.cookie('token', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        expires: 360000
+        expires: new Date(Date.now() + 900000)
     }); // setting cookie
 
     // If every check remains successful then returning user along with auth token
