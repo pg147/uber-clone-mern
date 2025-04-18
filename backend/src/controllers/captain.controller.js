@@ -49,3 +49,33 @@ export async function registerCaptain(req, res) {
         return ResponseError(res, 500, 'Internal server error!');
     }
 }
+
+export async function loginCaptain(req, res) {
+    const { email, password } = req.body;  // extracting data
+
+    // If any of the fields is missing
+    if (!email || !password) return ResponseError(res, 400, 'All fields required!');
+
+    // Fetching captain from the database using email
+    const captain = await captainModel.findOne({ email: email }).select('+password');
+
+    // If no captain was found using the email
+    if (!captain) return ResponseError(res, 402, `Captain with ${email} not found!`);
+
+    // Checking/comparing the hashed password with input password
+    const checkPassword = await captain.comparePassword(password);
+
+    // If password check fails
+    if (!checkPassword) return ResponseError(res, 400, 'Incorrect password!');
+
+    const token = captain.generateToken();  // generating token
+
+    res.cookie('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        expires: 86400
+    });  // setting cookie
+
+    // Returning captain along with the token
+    return ResponseSuccess(res, 200, { token, captain });
+}
