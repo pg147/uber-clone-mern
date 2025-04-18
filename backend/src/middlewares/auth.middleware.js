@@ -1,6 +1,7 @@
 import { ResponseError } from "../libs/utils.js";
 import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
+import blacklistTokenModel from "../models/blacklistToken.model.js";
 
 export async function authUser(req, res, next) {
     // Finding token either through cookies or headers
@@ -8,6 +9,10 @@ export async function authUser(req, res, next) {
     const token = req.cookies?.token || req.headers?.authorization?.split(' ')[1];
 
     if (!token) return ResponseError(res, 401, "Unauthorized access!");
+
+    const isBlacklist = await blacklistTokenModel.findOne({ token: token });
+
+    if (isBlacklist) return ResponseError(res, 401, "Unauthorized access!");
 
     try {
         const decodedToken = await jwt.verify(token, process.env.JWT_SECRET);
