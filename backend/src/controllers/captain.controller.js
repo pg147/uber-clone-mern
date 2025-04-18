@@ -1,5 +1,6 @@
 import { ResponseError, ResponseSuccess } from "../libs/utils.js";
 import captainModel from "../models/captain.model.js";
+import blacklistTokenModel from "../models/blacklistToken.model.js";
 
 export async function registerCaptain(req, res) {
     const { firstName, lastName, email, password, color, numberPlate, vehicleType, capacity } = req.body;
@@ -78,4 +79,21 @@ export async function loginCaptain(req, res) {
 
     // Returning captain along with the token
     return ResponseSuccess(res, 200, { token, captain });
+}
+
+export async function logoutCaptain(req, res) {
+    // Fetching token from cookies or headers
+    const token = req.cookies?.token || req.headers?.authorization?.token;
+
+    // Blacklisting the token in the database
+    await blacklistTokenModel.create({ token });
+
+    res.clearCookie('token');  // clearing the token from cookie
+
+    return ResponseSuccess(res, 200, { message: "Logged out successfully!" });
+}
+
+export async function getCaptainProfile(req, res) {
+    // Here only Success Response is required, since middleware checks for the possible failure
+    return ResponseSuccess(res, 200, { captain: req.captain });
 }
