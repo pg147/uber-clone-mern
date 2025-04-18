@@ -68,15 +68,15 @@ captainSchema.methods.generateToken = function () {
         expiresIn: '24h'
     });
 
-    return { token };
+    return token;
 }
 
-captainSchema.methods.hashPassword = async function (password) {
-    return await bcrypt.hash(password, 10);
-}
-
-captainSchema.statics.comparePassword = async function (password) {
+captainSchema.methods.comparePassword = async function (password) {
     return await bcrypt.compare(password, this.password);
+}
+
+captainSchema.statics.hashPassword = async function (password) {
+    return await bcrypt.hash(password, 10);
 }
 
 const Captain = mongoose.model('Captain', captainSchema);
