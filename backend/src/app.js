@@ -11,16 +11,17 @@ import captainRouter from "./routes/captain.route.js";
 dotenv.config(); // initialized dotenv for env variables
 
 const app = express();  // initialized express app
+const baseRouter = express.Router();
 
 app.use(express.json());  // middleware to parse data in json
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());  // middleware to parse cookies
 app.use(cors());  // middleware for cross-origin-resource-sharing
 
-app.use('/api/v1'); // base route
+app.use('/api/v1', baseRouter); // base router
 
 // Routes
-app.use('/users', userRouter);
-app.use('/captains', captainRouter);
+baseRouter.use('/users', userRouter);
+baseRouter.use('/captains', captainRouter);
 
 export { app };
