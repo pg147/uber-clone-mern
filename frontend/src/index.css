@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@theme {
+    --default-font-family: "Uber Move", sans-serif;
+}
+
+@font-face {
+    font-family: "Uber Move";
+    src: local("UberMove-Regular"),
+    url("./assets/fonts/UberMove-Regular.ttf") format("truetype");
+}
