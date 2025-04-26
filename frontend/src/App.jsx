@@ -1,10 +1,17 @@
 import React from 'react';
+import { Route, Routes } from "react-router-dom";
+import { Home, UserSignup } from "./pages";
+import UserLogin from "./pages/UserLogin.jsx";
 
 function App() {
     return (
-        <div>
-            <h1 className="font-bold text-4xl">Hello</h1>
-        </div>
+        <>
+            <Routes>
+                <Route path={'/'} element={<Home />} />
+                <Route path={'/user/signup'} element={<UserSignup />} />
+                <Route path={'/user/login'} element={<UserLogin />} />
+            </Routes>
+        </>
     );
 }
 
