@@ -1,22 +1,29 @@
-import React, {useState} from 'react';
-import {Link} from "react-router-dom";
-import {ViewIcon, ViewOffIcon} from "hugeicons-react";
+import React, { useState } from 'react';
+import { Link } from "react-router-dom";
+import { ViewIcon, ViewOffIcon } from "hugeicons-react";
 
-function UserLogin(props) {
+function UserLogin() {
     const [showPassword, setShowPassword] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [userData, setUserData] = useState({});
 
     // Function to handle show / hide password
     const handleShowPassword = () => {
         setShowPassword(!showPassword);
     }
 
-    const handleSubmitForm = () => {
-        const userData = {
-            email,
-            password
-        }
+    const handleSubmitForm = (e) => {
+        e.preventDefault();  // preventing default submit behaviour
+
+        setUserData({
+            email: email,
+            password: password
+        })
+
+        // Cleanup
+        setEmail('')
+        setPassword('')
 
         console.log(userData);
     }
@@ -26,13 +33,13 @@ function UserLogin(props) {
             <div>
                 <h1 className={"text-xl text-center font-bold"}>Log into your account</h1>
 
-                <form onSubmit={handleSubmitForm} className={"mt-6"}>
+                <form onSubmit={(e) => handleSubmitForm(e)} className={"mt-6"}>
                     {/* Input Fields */}
                     <div className={"flex flex-col space-y-5"}>
                         {/* Email address */}
                         <div className={"w-full flex flex-col space-y-2"}>
-                            <label htmlFor="contact">What's your email address?</label>
-                            <div id={"contact"}>
+                            <label htmlFor="email">What's your email address?</label>
+                            <div id={"email"}>
                                 <input
                                     type="email"
                                     value={email}
@@ -67,7 +74,11 @@ function UserLogin(props) {
                     </div>
 
                     {/*  Continue Button  */}
-                    <button type="submit" className={"mt-3 w-full py-3 rounded-xl bg-primary text-white"}>Continue
+                    <button
+                        type="submit"
+                        className={"mt-3 w-full py-3 rounded-xl bg-primary text-white"}
+                    >
+                        Continue
                     </button>
                 </form>
 
