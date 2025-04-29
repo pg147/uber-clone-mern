@@ -16,7 +16,10 @@ const baseRouter = express.Router();
 app.use(express.json());  // middleware to parse data in json
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());  // middleware to parse cookies
-app.use(cors());  // middleware for cross-origin-resource-sharing
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true
+}));  // middleware for cross-origin-resource-sharing
 
 app.use('/api/v1', baseRouter); // base router
 
