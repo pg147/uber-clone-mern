@@ -1,31 +1,69 @@
-import React, { useState } from 'react';
-import { Link } from "react-router-dom";
+// React imports
+import React, { useContext, useState } from 'react';
+
+// React-Router-DOM imports
+import { Link, useNavigate } from "react-router-dom";
+
+// Axios
+import { axiosInstance } from "../libs/axios.js";
+
+// Contexts
+import { userDataContext } from "../context/userContext.jsx";
+
+// Icon libraries
 import { ViewIcon, ViewOffIcon } from "hugeicons-react";
+import { LuLoaderCircle } from "react-icons/lu";
 
 function UserLogin() {
+    const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [userData, setUserData] = useState({});
+
+    const navigate = useNavigate();  // for navigating
+
+    // Context for fetching user
+    const { user, setUser } = useContext(userDataContext);
 
     // Function to handle show / hide password
     const handleShowPassword = () => {
         setShowPassword(!showPassword);
     }
 
-    const handleSubmitForm = (e) => {
+    const handleSubmitForm = async (e) => {
         e.preventDefault();  // preventing default submit behaviour
 
-        setUserData({
+        const userData = {
             email: email,
             password: password
-        })
+        }
 
-        // Cleanup
-        setEmail('')
-        setPassword('')
+        try {
+            setLoading(true);  // set loading true while API response is being fetched
 
-        console.log(userData);
+            const response = await axiosInstance.post('/users/login', userData);
+            const responseData = response.data;
+
+            if (responseData && responseData.success) {
+                setUser(responseData.data.user);
+
+                // Setting token in local Storage
+                localStorage.setItem('token', responseData.data.token);
+
+                // Simulate logging process for better UX
+                setTimeout(() => {
+                    navigate('/home');
+
+                    // Cleanup
+                    setEmail('');
+                    setPassword('');
+
+                    setLoading(false);
+                }, 3000);
+            }
+        } catch (error) {
+            console.log("Error logging in : ", error);
+        }
     }
 
     return (
@@ -76,9 +114,13 @@ function UserLogin() {
                     {/*  Continue Button  */}
                     <button
                         type="submit"
+                        disabled={loading}
                         className={"mt-3 w-full py-3 rounded-xl bg-primary text-white"}
                     >
-                        Continue
+                        {loading ? <span className={"flex items-center justify-center gap-x-3 w-fit mx-auto"}>
+                            <LuLoaderCircle className={"size-5 animate-spin"}/>
+                            Logging in...
+                        </span> : "Login"}
                     </button>
                 </form>
 

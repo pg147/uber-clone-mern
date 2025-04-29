@@ -2,7 +2,7 @@
 import React, { useContext, useState } from 'react';
 
 // React router dom
-import { Link, useNavigate}  from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // Context API
 import { userDataContext } from "../context/userContext.jsx";
@@ -11,8 +11,8 @@ import { userDataContext } from "../context/userContext.jsx";
 import { axiosInstance } from "../libs/axios.js";
 
 // Icon Libraries
-import {Loading02Icon, ViewIcon, ViewOffIcon} from "hugeicons-react";
-import {LuLoaderCircle} from "react-icons/lu";
+import { Loading02Icon, ViewIcon, ViewOffIcon } from "hugeicons-react";
+import { LuLoaderCircle } from "react-icons/lu";
 
 function UserSignup() {
     const [loading, setLoading] = useState(false);
@@ -25,7 +25,7 @@ function UserSignup() {
     const navigate = useNavigate();  // for navigating
 
     // Context for fetching user
-    const {user, setUser} = useContext(userDataContext);
+    const { user, setUser } = useContext(userDataContext);
 
     // Function to handle show / hide password
     const handleShowPassword = () => {
@@ -47,22 +47,29 @@ function UserSignup() {
             setLoading(true);
 
             const response = await axiosInstance.post('/users/create', newUser);
+            const responseData = response.data;
 
-            if (response.data && response.success) {
-                setUser(response.data.user);
+            if (responseData && responseData.success) {
+                setUser(responseData.data.user);
 
-                // Cleanup
-                setFirstName('');
-                setLastName('')
-                setEmail('')
-                setPassword('');
+                // Setting token in local Storage
+                localStorage.setItem('token', responseData.data.token);
 
-                navigate('/home');
+                // Simulate logging process for better UX
+                setTimeout(() => {
+                    navigate('/home');
+
+                    // Cleanup
+                    setFirstName('');
+                    setLastName('')
+                    setEmail('')
+                    setPassword('');
+
+                    setLoading(false);
+                }, 3000);
             }
         } catch (error) {
             console.log(error);
-        } finally {
-            setLoading(false);
         }
     }
 
