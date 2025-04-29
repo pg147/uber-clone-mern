@@ -1,36 +1,69 @@
-import React, { useState } from 'react';
-import { Link } from "react-router-dom";
-import { ViewIcon, ViewOffIcon } from "hugeicons-react";
+// React imports
+import React, { useContext, useState } from 'react';
+
+// React router dom
+import { Link, useNavigate}  from "react-router-dom";
+
+// Context API
+import { userDataContext } from "../context/userContext.jsx";
+
+// Axios Instance
+import { axiosInstance } from "../libs/axios.js";
+
+// Icon Libraries
+import {Loading02Icon, ViewIcon, ViewOffIcon} from "hugeicons-react";
+import {LuLoaderCircle} from "react-icons/lu";
 
 function UserSignup() {
+    const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [userData, setUserData] = useState({});
+
+    const navigate = useNavigate();  // for navigating
+
+    // Context for fetching user
+    const {user, setUser} = useContext(userDataContext);
 
     // Function to handle show / hide password
     const handleShowPassword = () => {
         setShowPassword(!showPassword);
     }
 
-    const handleSubmitForm = (e) => {
+    // Function to handle submit form
+    const handleSubmitForm = async (e) => {
         e.preventDefault();  // preventing default submit behaviour
 
-        setUserData({
-            fullName: firstName + " " + lastName,
+        const newUser = {
+            firstName: firstName,
+            lastName: lastName,
             email: email,
             password: password
-        })
+        };
 
-        // Cleanup
-        setFirstName('');
-        setLastName('')
-        setEmail('')
-        setPassword('')
+        try {
+            setLoading(true);
 
-        console.log(userData);
+            const response = await axiosInstance.post('/users/create', newUser);
+
+            if (response.data && response.success) {
+                setUser(response.data.user);
+
+                // Cleanup
+                setFirstName('');
+                setLastName('')
+                setEmail('')
+                setPassword('');
+
+                navigate('/home');
+            }
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
@@ -105,9 +138,13 @@ function UserSignup() {
                     {/*  Continue Button  */}
                     <button
                         type="submit"
+                        disabled={loading}
                         className={"mt-3 w-full py-3 rounded-xl bg-primary text-white"}
                     >
-                        Sign up
+                        {loading ? <span className={"flex items-center justify-center gap-x-3 w-fit mx-auto"}>
+                            <LuLoaderCircle className={"size-5 animate-spin"}/>
+                            Signing up...
+                        </span> : "Sign up"}
                     </button>
                 </form>
 
