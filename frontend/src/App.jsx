@@ -16,7 +16,7 @@ import {
     CaptainSignup,
     Home,
     UserProtectedWrapper,
-    UserLogout
+    UserLogout, CaptainProtectedWrapper, CaptainHome, CaptainLogout
 } from "./pages";
 
 function App() {
@@ -25,7 +25,7 @@ function App() {
             <Routes>
                 <Route path={'/'} element={<Landing/>}/>
 
-                {/* Protected Route */}
+                {/* Protected Route - User */}
                 <Route
                     path={'/home'}
                     element={<UserProtectedWrapper><Home/></UserProtectedWrapper>}
@@ -36,8 +36,18 @@ function App() {
                     path={'/user/logout'}
                     element={<UserProtectedWrapper><UserLogout/></UserProtectedWrapper>}
                 />
-                <Route path={'/captain/login'} element={<CaptainLogin/>}/>
+
+                {/* Protected Route - Captain */}
+                <Route
+                    path={'/captain/home'}
+                    element={<CaptainProtectedWrapper><CaptainHome /></CaptainProtectedWrapper>}
+                />
                 <Route path={'/captain/signup'} element={<CaptainSignup/>}/>
+                <Route path={'/captain/login'} element={<CaptainLogin/>}/>
+                <Route
+                    path={'/captain/logout'}
+                    element={<CaptainProtectedWrapper><CaptainLogout /></CaptainProtectedWrapper>}
+                />
             </Routes>
             <Toaster />
         </>

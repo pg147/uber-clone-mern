@@ -1,27 +1,71 @@
-import React, { useState } from 'react';
+// React imports
+import React, { useContext, useState } from 'react';
+
+// React-Router-DOM
+import { Link, useNavigate } from "react-router-dom";
+
+// Axios
+import { axiosInstance } from "../libs/axios.js";
+
+// Context API
+import { captainDataContext } from "../context/captainContext.jsx";
+
+// React hot toast
+import toast from "react-hot-toast";
+
+// Icon libraries
 import { ViewIcon, ViewOffIcon } from "hugeicons-react";
-import { Link } from "react-router-dom";
+import { LuLoaderCircle } from "react-icons/lu";
 
 function CaptainLogin() {
+    const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [captainData, setUserData] = useState({});
+
+    const navigate = useNavigate();
+
+    const { setCaptain } = useContext(captainDataContext);
 
     // Function to handle show / hide password
     const handleShowPassword = () => {
         setShowPassword(!showPassword);
     }
 
-    const handleSubmitForm = (e) => {
+    const handleSubmitForm = async (e) => {
         e.preventDefault();  // preventing default submit behaviour
 
-        setUserData({
+        const captainData = {
             email: email,
             password: password
-        })
+        }
 
-        console.log(captainData);
+        try {
+            setLoading(true);
+
+            const response = await axiosInstance.post('/captains/login', captainData);
+            const responseData = response.data;
+
+            if (responseData && responseData.success) {
+                setCaptain(responseData.data.captain);
+
+                localStorage.setItem('cToken', responseData.data.token);
+
+                setTimeout(() => {
+                    navigate('/captain/home');
+
+                    // Cleanup
+                    setEmail('');
+                    setPassword('');
+
+                    setLoading(false);
+                }, 3000);
+            }
+        } catch (error) {
+            setLoading(false);
+            console.log("Error logging in captain : ", error);
+            return toast.error(error.message);
+        }
     }
 
     return (
@@ -72,9 +116,13 @@ function CaptainLogin() {
                     {/*  Continue Button  */}
                     <button
                         type="submit"
+                        disabled={loading}
                         className={"mt-3 w-full py-3 rounded-xl bg-primary text-white"}
                     >
-                        Continue
+                        {loading ? <span className={"flex items-center justify-center gap-x-3 w-fit mx-auto"}>
+                            <LuLoaderCircle className={"size-5 animate-spin"}/>
+                            Logging in...
+                        </span> : "Login as Captain"}
                     </button>
                 </form>
 
