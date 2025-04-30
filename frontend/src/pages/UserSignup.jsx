@@ -7,6 +7,9 @@ import { Link, useNavigate } from "react-router-dom";
 // Context API
 import { userDataContext } from "../context/userContext.jsx";
 
+// React hot toast
+import toast from "react-hot-toast";
+
 // Axios Instance
 import { axiosInstance } from "../libs/axios.js";
 
@@ -69,7 +72,9 @@ function UserSignup() {
                 }, 3000);
             }
         } catch (error) {
-            console.log(error);
+            setLoading(false);
+            console.log("Error signing up : ", error);
+            return toast.error(error.message);
         }
     }
 

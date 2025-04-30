@@ -7,6 +7,9 @@ import { Link, useNavigate } from "react-router-dom";
 // Axios
 import { axiosInstance } from "../libs/axios.js";
 
+// React hot toast
+import toast from "react-hot-toast";
+
 // Contexts
 import { userDataContext } from "../context/userContext.jsx";
 
@@ -62,7 +65,9 @@ function UserLogin() {
                 }, 3000);
             }
         } catch (error) {
+            setLoading(false);
             console.log("Error logging in : ", error);
+            return toast.error(error.message);
         }
     }
 
