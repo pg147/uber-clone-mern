@@ -4,6 +4,9 @@ import React, { useContext } from 'react';
 // React-Router-DOM imports
 import { Route, Routes } from "react-router-dom";
 
+// React toaster
+import { Toaster } from "react-hot-toast";
+
 // Page Components
 import {
     Landing,
@@ -36,6 +39,7 @@ function App() {
                 <Route path={'/captain/login'} element={<CaptainLogin/>}/>
                 <Route path={'/captain/signup'} element={<CaptainSignup/>}/>
             </Routes>
+            <Toaster />
         </>
     );
 }
