@@ -293,9 +293,9 @@ function CaptainSignup() {
                 </Link>
             </div>
 
-            <Link to={'/captain/signup'}>
+            <Link to={'/user/signup'}>
                 <button className={"mt-2.5 w-full py-3 rounded-xl bg-secondary text-white border-2 border-input"}>
-                    Sign up as Captain
+                    Sign up as User
                 </button>
             </Link>
         </div>
