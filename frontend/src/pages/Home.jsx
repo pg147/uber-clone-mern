@@ -1,8 +1,11 @@
 // React imports
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 
 // Components
 import { LocationSearchPanel, RidesPanel } from "../components";
+
+// Context API
+import { rideDataContext } from "../context/rideContext.jsx";
 
 // Icon libraries
 import { LuMoveLeft } from "react-icons/lu";
@@ -12,6 +15,9 @@ function Home() {
     const [pickup, setPickup] = useState("");
     const [drop, setDrop] = useState("");
     const [focusField, setFocusField] = useState("");
+
+    // Ride context
+    const { rideType } = useContext(rideDataContext);
 
     // Function to handle navigation icon click
     const handleNavigationClick = () => setModalOpen(false);
@@ -40,7 +46,7 @@ function Home() {
                 />
             </div>
 
-            <div className={`absolute w-full flex flex-col space-y-4 bg-white shadow-intense ${modalOpen ? 'h-screen top-0' : 'h-fit bottom-0 rounded-t-4xl'}`}>
+            <div className={`absolute w-full flex flex-col space-y-2 bg-white shadow-intense ${modalOpen ? 'h-screen top-0' : 'h-fit bottom-0 rounded-t-4xl'}`}>
                 {/* Pickup and Drop location container */}
                 <div className={`h-fit flex flex-col p-5 ${modalOpen ? 'space-y-5' : 'space-y-4'}`}>
                     {/* Heading & conditional Navigation icon */}
@@ -120,8 +126,22 @@ function Home() {
                     />
                 </div>}
 
-                {(pickup.length > 0 && drop.length > 0 && !modalOpen) && <div className={"h-[150px] overflow-y-scroll scroll-smooth"}>
-                    <RidesPanel/>
+                {/*
+                    Ride options appear conditionally when both addresses are set
+                    and the location list modal isn't open
+                */}
+                {(pickup.length > 0 && drop.length > 0 && !modalOpen) &&
+                    <div className={"h-[150px] overflow-y-scroll scroll-smooth"}>
+                        <RidesPanel/>
+                    </div>
+                }
+
+                {/*
+                    Choose 'rideType' button appears when a ride is selected and
+                    the location list modal isn't open
+                */}
+                {(rideType && !modalOpen) && <div className={"px-5"}>
+                    <button className={"my-3 w-full py-3 text-lg rounded-xl bg-primary text-white"}>Choose {rideType}</button>
                 </div>}
             </div>
         </div>

@@ -1,8 +1,11 @@
 // React imports
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 
 // Constants
 import { rides } from "../constants/vehicles.js";
+
+// Context API
+import { rideDataContext } from "../context/rideContext.jsx";
 
 // Icon libraries
 import { UserMultipleIcon } from "hugeicons-react";
@@ -10,18 +13,22 @@ import { UserMultipleIcon } from "hugeicons-react";
 function RidesPanel() {
     const [selectedRide, setSelectedRide] = useState({});
 
+    // Ride context
+    const { rideType, setRideType } = useContext(rideDataContext);
+
     // Function to handle selected ride with index
     const handleSelectedRide = (index) => {
         setSelectedRide(rides[index]);
+        setRideType(rides[index].name);
     }
 
     return (
-        <div className={"flex flex-col space-y-1 px-3"}>
+        <div className={"flex flex-col space-y-1 px-5"}>
             {rides.map((ride, index) => (
                 <div
                     key={ride.name}
                     onClick={() => handleSelectedRide(index)}
-                    className={`h-fit w-full p-4 flex space-x-4 justify-end ${selectedRide.name === ride.name ? 'border-2 border-primary rounded-2xl' : ''}`}
+                    className={`h-fit w-full flex space-x-4 justify-end transition-[padding] duration-300 ease-in-out ${(selectedRide.name || rideType) === ride.name ? 'border-2 border-primary rounded-2xl px-4 py-4' : 'px-2 py-4'}`}
                 >
                     {/* Ride Image & Details */}
                     <div className={"flex items-center space-x-8 w-full"}>
