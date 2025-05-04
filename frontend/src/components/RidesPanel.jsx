@@ -18,14 +18,18 @@ function RidesPanel() {
 
     // Function to handle selected ride with index
     const handleSelectedRide = (index) => {
+        const selectedOption = document.getElementById(rides[index].name);
+        selectedOption.scrollIntoView({ behavior: "smooth", block: "center" });
+
         setSelectedRide(rides[index]);
         setRideType(rides[index].name);
     }
 
     return (
-        <div className={"flex flex-col space-y-1 px-5"}>
+        <div className={"flex flex-col space-y-1 px-5 scroll-smooth"}>
             {rides.map((ride, index) => (
                 <div
+                    id={ride.name}
                     key={ride.name}
                     onClick={() => handleSelectedRide(index)}
                     className={`h-fit w-full flex space-x-4 justify-end transition-[padding] duration-300 ease-in-out ${(selectedRide.name || rideType) === ride.name ? 'border-2 border-primary rounded-2xl px-4 py-4' : 'px-2 py-4'}`}

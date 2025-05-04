@@ -35,7 +35,7 @@ function Home() {
 
     return (
         <div className={"relative h-screen"}>
-            <img src="/logo.png" alt="uber_logo" className={'h-5 absolute left-5 top-3'}/>
+            <img src="/logo.png" alt="uber_logo" className={'h-5 absolute left-5 top-5'}/>
 
             {/* Temporary image container simulating MAP */}
             <div className={"h-screen w-screen"}>
@@ -46,17 +46,26 @@ function Home() {
                 />
             </div>
 
-            <div className={`absolute w-full flex flex-col space-y-2 bg-white shadow-intense ${modalOpen ? 'h-screen top-0' : 'h-fit bottom-0 rounded-t-4xl'}`}>
+            <div
+                className={`absolute w-full flex flex-col space-y-2 bg-white shadow-intense ${modalOpen ? 'h-screen top-0' : 'h-fit bottom-0 rounded-t-4xl'}`}>
                 {/* Pickup and Drop location container */}
                 <div className={`h-fit flex flex-col p-5 ${modalOpen ? 'space-y-5' : 'space-y-4'}`}>
-                    {/* Heading & conditional Navigation icon */}
-                    <div className={"grid grid-cols-3 items-center"}>
-                        {/* Icon appears only when the Modal is open */}
-                        {modalOpen && <div onClick={handleNavigationClick}>
-                            <LuMoveLeft className={"size-6 text-primary"} strokeWidth={2}/>
+                    {/* Conditional Heading & conditional Navigation icon container */}
+                    {(!pickup.length > 0 || !drop.length > 0 || modalOpen) &&
+                        <div className={"flex items-center justify-between"}>
+                            {/* Icon appears only when the Modal is open */}
+                            {modalOpen && <div onClick={handleNavigationClick}>
+                                <LuMoveLeft className={"size-6 text-primary"} strokeWidth={2}/>
+                            </div>}
+
+                            {/* Title */}
+                            <h3 className={"text-xl font-semibold"}>{modalOpen ? `Choose your ${focusField}` : "Find your trip"}</h3>
+
+                            {/* This hidden div acts as a placeholder to adjust the title position at the middle */}
+                            <div className={"opacity-0 pointer-events-none"}>
+                                <LuMoveLeft className={"size-6 text-primary"} strokeWidth={2}/>
+                            </div>
                         </div>}
-                        <h3 className={"text-xl font-semibold"}>Find your trip</h3>
-                    </div>
 
                     {/* Location input form */}
                     <form onSubmit={(e) => handleSubmitForm(e)}>
@@ -131,8 +140,14 @@ function Home() {
                     and the location list modal isn't open
                 */}
                 {(pickup.length > 0 && drop.length > 0 && !modalOpen) &&
-                    <div className={"h-[150px] overflow-y-scroll scroll-smooth"}>
-                        <RidesPanel/>
+                    <div className={"h-[200px] flex flex-col space-y-4"}>
+                        {/* Heading */}
+                        <h1 className={"text-xl font-semibold px-5"}>Choose your ride</h1>
+
+                        {/* Ride options component */}
+                        <div className={"h-[150px] overflow-y-scroll scroll-smooth"}>
+                            <RidesPanel/>
+                        </div>
                     </div>
                 }
 
@@ -141,7 +156,8 @@ function Home() {
                     the location list modal isn't open
                 */}
                 {(rideType && !modalOpen) && <div className={"px-5"}>
-                    <button className={"my-3 w-full py-3 text-lg rounded-xl bg-primary text-white"}>Choose {rideType}</button>
+                    <button
+                        className={"my-3 w-full py-3 text-lg rounded-xl bg-primary text-white"}>Choose {rideType}</button>
                 </div>}
             </div>
         </div>
